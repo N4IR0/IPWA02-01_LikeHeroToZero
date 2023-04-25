@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+   <title>Like Hero To Zero - Startseite</title>
+   <link rel="stylesheet" href="css/style.css"/>
+</h:head>
+<h:body>
+   <ui:include src="include/header.xhtml"/>
+
+   <h1>Like Hero To Zero!</h1>
+
+   <p>Auf dieser Webseite finden Sie die Emissionswerte verschiedener Länder!</p>
+
+   <p>Hier der aktuellste Emissionswert für Ihr aktuelles Land (<h:outputText value="#{sessionService.locale.getDisplayCountry()}"/>): <h:outputText value="#{indexController.newestEmissionData.roundedValue} kt (Stand: #{indexController.newestEmissionData.reportedFor})"/> </p>
+
+   <h:outputText value="Für Ihr Land liegen keine Emissionswerte vor!" rendered="#{indexController.newestEmissionData == null}"/>
+</h:body>
+</html>

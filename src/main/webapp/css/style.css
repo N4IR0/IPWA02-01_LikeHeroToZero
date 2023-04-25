@@ -1,0 +1,11 @@
+ul#nav {
+    margin: 0;
+}
+
+ul#nav li {
+    display: inline;
+}
+
+.alert {
+    color: red;
+}

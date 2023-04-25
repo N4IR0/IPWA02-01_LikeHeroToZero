@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+>
+<h:head>
+   <title>Like Hero To Zero - Emissionswerte</title>
+
+   <link rel="stylesheet" href="css/style.css"/>
+</h:head>
+<h:body>
+   <ui:include src="include/header.xhtml"/>
+
+   <h1>Emissionswerte</h1>
+
+   <p>Bitte wählen Sie ein Land aus:</p>
+
+   <h:form>
+      <p><h:message for="country" styleClass="alert"/></p>
+      <h:panelGrid columns="2">
+         <h:outputLabel value="Land:" for="country"/>
+         <p:selectOneMenu id="country" value="#{emissionDataController.selectedCountryId}" validator="#{emissionDataController.validateCountryChange}" placeholder="Bitte wählen Sie ein Land...">
+            <f:selectItems value="#{countryDAO.findAll()}" var="entry" itemValue="#{entry.id}" itemLabel="#{entry.name}"/>
+            <p:ajax event="change" update="selectedCountry"/>
+         </p:selectOneMenu>
+      </h:panelGrid>
+   </h:form>
+
+   <h:panelGroup id="selectedCountry">
+      <h:panelGroup rendered="#{emissionDataController.selectedCountryId != 0}">
+         <h:outputText value="Für das gewählte Land liegen noch keine Emissionswerte vor!" rendered="#{emissionDataController.emissionDataBySelectedCountry.size() == 0}" />
+         <h:dataTable var="emissionData" value="#{emissionDataController.emissionDataBySelectedCountry}" rendered="#{emissionDataController.emissionDataBySelectedCountry.size() > 0}">
+            <h:column>
+               <f:facet name="header">Datum</f:facet>
+               <h:outputText value="#{emissionData.reportedFor}"/>
+            </h:column>
+            <h:column>
+               <f:facet name="header">Emissionswert (in kt)</f:facet>
+               <h:outputText value="#{emissionData.roundedValue}"/>
+            </h:column>
+            <h:column rendered="#{emissionDataController.userAllowedToCreateOrEdit}">
+               <f:facet name="header">Aktionen</f:facet>
+               <h:form>
+                  <p:commandButton value="Bearbeiten" update="createOrEditArea" action="#{emissionDataController.initializingExistingEmissionData(emissionData.id)}">
+                     <p:resetInput target="createOrEditForm"/>
+                  </p:commandButton>
+               </h:form>
+               <f:facet name="footer">
+                  <h:form>
+                     <p:commandButton value="Neuen Anlegen" update="createOrEditArea" action="#{emissionDataController.initializeNewEmissionData()}">
+                        <p:resetInput target="createOrEditForm"/>
+                     </p:commandButton>
+                  </h:form>
+               </f:facet>
+            </h:column>
+         </h:dataTable>
+         <h:panelGroup id="createOrEditArea" rendered="#{emissionDataController.userAllowedToCreateOrEdit}">
+            <hr/>
+            <h3>
+               <h:outputText value="Neuen Emissionswert anlegen" rendered="#{emissionDataController.emissionData.id == 0}"/>
+               <h:outputText value="Emissionswert bearbeiten" rendered="#{emissionDataController.emissionData.id != 0}"/>
+            </h3>
+
+            <h:form rendered="#{emissionDataController.selectedCountryId != 0}" id="createOrEditForm">
+               <h:panelGrid columns="3">
+                  <h:outputLabel for="reportedFor" value="Datum:"/>
+                  <p:datePicker value="#{emissionDataController.emissionData.reportedFor}" id="reportedFor" validator="#{emissionDataController.validateReportedForDate}"/>
+                  <p:message for="reportedFor"/>
+                  <h:outputLabel for="emissionValue" value="Emissionswert (in kt):"/>
+                  <p:inputNumber id="emissionValue" value="#{emissionDataController.emissionData.value}" decimalPlaces="3" validator="#{emissionDataController.validateEmissionValue}"/>
+                  <p:message for="emissionValue"/>
+               </h:panelGrid>
+               <p:commandButton value="Anlegen" rendered="#{emissionDataController.emissionData.id == 0}" action="#{emissionDataController.saveEmissionData()}" update="selectedCountry createOrEditArea"/>
+               <p:commandButton value="Bearbeiten" rendered="#{emissionDataController.emissionData.id != 0}" action="#{emissionDataController.saveEmissionData()}" update="selectedCountry createOrEditArea"/>
+            </h:form>
+         </h:panelGroup>
+      </h:panelGroup>
+   </h:panelGroup>
+</h:body>
+</html>

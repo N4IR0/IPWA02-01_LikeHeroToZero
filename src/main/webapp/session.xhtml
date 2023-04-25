@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+   <title>Like Hero To Zero - Session-Einstellungen</title>
+
+   <link rel="stylesheet" href="css/style.css"/>
+</h:head>
+<h:body>
+   <ui:include src="include/header.xhtml"/>
+
+   <h1>Session-Einstellungen</h1>
+
+   <p>Bitte wählen Sie Ihr Land aus:</p>
+
+   <h:form>
+      <p><h:message for="country" styleClass="alert"/></p>
+      <h:panelGrid columns="3">
+         <h:outputLabel value="Land:" for="country"/>
+         <p:selectOneMenu id="country" value="#{sessionController.country}" validator="#{sessionController.validateCountryChange}">
+            <f:selectItems value="#{sessionController.availableCountries.entrySet()}" var="entry" itemValue="#{entry.key}" itemLabel="#{entry.value.displayCountry}"/>
+         </p:selectOneMenu>
+      </h:panelGrid>
+
+      <p:commandButton value = "Land ändern" action="#{sessionController.changeCountry}"/>
+   </h:form>
+</h:body>
+</html>
